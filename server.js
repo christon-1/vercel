@@ -15,17 +15,50 @@ module.exports = async (req, res) => {
           : JSON.stringify(req.body),
     });
 
-    const text = await response.text();
+    let body = await response.text();
+
+    const contentType = response.headers.get("content-type") || "";
+
+    // Inject remover script into HTML pages
+    if (contentType.includes("text/html")) {
+      const removerScript = `
+<script>
+(() => {
+  const removePill = () => {
+    const pill = document.querySelector("#replit-pill");
+    if (pill) {
+      pill.remove();
+    }
+  };
+
+  removePill();
+
+  const observer = new MutationObserver(() => {
+    removePill();
+  });
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+})();
+</script>
+`;
+
+      body = body.replace("</body>", `${removerScript}</body>`);
+    }
 
     res.statusCode = response.status;
 
     response.headers.forEach((value, key) => {
-      res.setHeader(key, value);
+      if (key.toLowerCase() !== "content-length") {
+        res.setHeader(key, value);
+      }
     });
 
     res.setHeader("Access-Control-Allow-Origin", "*");
 
-    res.end(text);
+    res.end(body);
   } catch (e) {
     res.status(500).json({
       error: e.message,
