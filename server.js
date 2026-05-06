@@ -1,10 +1,9 @@
-const TARGET = "https://credit-routerzip--cebest2000us1.replit.app";
+module.exports = async (req, res) => {
+  const TARGET =
+    "https://credit-routerzip--cebest2000us1.replit.app";
 
-export default async function handler(req, res) {
   try {
-    const url = TARGET + req.url;
-
-    const response = await fetch(url, {
+    const response = await fetch(TARGET + req.url, {
       method: req.method,
       headers: {
         ...req.headers,
@@ -16,28 +15,20 @@ export default async function handler(req, res) {
           : JSON.stringify(req.body),
     });
 
-    res.status(response.status);
+    const text = await response.text();
+
+    res.statusCode = response.status;
 
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
     });
 
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET,POST,PUT,PATCH,DELETE,OPTIONS"
-    );
 
-    if (req.method === "OPTIONS") {
-      return res.status(200).end();
-    }
-
-    const text = await response.text();
-
-    res.send(text);
-  } catch (err) {
+    res.end(text);
+  } catch (e) {
     res.status(500).json({
-      error: err.message,
+      error: e.message,
     });
   }
-}
+};
