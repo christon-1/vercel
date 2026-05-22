@@ -1,6 +1,6 @@
 module.exports = async (req, res) => {
   const TARGET =
-    "model-gateway--laralaville317.replit.app";
+    "https://model-gateway--laralaville317.replit.app";
 
   try {
     const response = await fetch(TARGET + req.url, {
