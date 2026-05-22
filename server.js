@@ -1,6 +1,6 @@
 module.exports = async (req, res) => {
   const TARGET =
-    "https://credit-routerzip--cebest2000us1.replit.app";
+    "model-gateway--laralaville317.replit.app";
 
   try {
     const response = await fetch(TARGET + req.url, {
