@@ -2,7 +2,7 @@ module.exports = async (req, res) => {
 
   const TARGET =
 
-    "https://model-gateway--laralaville317.replit.app";
+    "https://hex-api-gateway--laralaville317.replit.app";
 
   try {
 
